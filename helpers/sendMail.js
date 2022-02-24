@@ -2,16 +2,16 @@ import Emailing from './Emailing.js'
 
 async function welcomeEmail(receiver, verificationLink) {
     const emailHeader = {
-        subject:'Welcome to RDLand'
+        subject:'Welcome to Perfect Nanny'
     }
     const emailAccount = {
-        sender:'hello@rdland.io',
-        email:'hello'
+        sender:'support@perfectnanny.ng',
+        email:'support@perfectnanny.ng'
     }
     const mailedTo = {
         receiver,
         message:{
-            header:'Welcome to RDLand Closed Alpha!😀🤩',
+            header:'Welcome to Perfect Nanny!',
             verificationLink,
             body: `
             Please Use this Link to Complete your Registration
@@ -25,16 +25,16 @@ async function welcomeEmail(receiver, verificationLink) {
 ///fo
 async function resetPasswordEmail (receiver, verificationLink) {
     const emailHeader = {
-        subject:'Qualification Link'
+        subject:'Reset Your Password'
     }
     const emailAccount = {
-        sender:'hello@rdland.io',
-        email:'hello'
+        sender:'support@perfectnanny.ng',
+        email:'support@perfectnanny.ng'
     }
     const mailedTo = {
         receiver,
         message:{
-            header:'Welcome to RDLand Closed Alpha!😀🤩',
+            header:'Welcome to Perfect Nanny!',
             verificationLink,
             body: `
             Please Use this Link to Reset your Password

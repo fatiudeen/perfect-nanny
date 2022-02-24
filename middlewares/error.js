@@ -1,6 +1,6 @@
 import ErrorResponse from '../helpers/ErrorResponse.js'
 
-export default (err, req, res, next)=>{
+const errorHandler = (err, req, res, next)=>{
     let error = {...err}
 
     error.message = err.message
@@ -17,8 +17,10 @@ export default (err, req, res, next)=>{
         error = new ErrorResponse(message, 400)
     }
 
-    res.Status(error.statusCode || 500).json({
+    res.status(error.statusCode || 500).json({
         sucess: false,
         error: error.message || 'Server Error'
     })
 }
+
+export {errorHandler}

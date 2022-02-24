@@ -5,6 +5,7 @@ import {
         resetPasswordEmail,
         welcomeEmail
 } from '../helpers/sendMail.js'
+import notification from "../models/notification.js"
 
 //login route
 export const login = async (req, res, next) =>{
@@ -59,7 +60,8 @@ export const register = async (req, res , next)=>{
         const token = crypto.randomBytes(20).toString('hex')
 
         //creates new user
-        await user.create({firstName,
+
+        await User.create({firstName,
             lastName,
             password,
             email,
@@ -68,9 +70,12 @@ export const register = async (req, res , next)=>{
             role: req.params.role
         })
 
-        const verificationLink = `${process.env.ENV_URL}/api/auth/verify/${token}`
-
-        await welcomeEmail(email,verificationLink)
+        const verificationLink = `${process.env.ENV_URL}/auth/verify/${token}`
+        try {
+            await welcomeEmail(email,verificationLink)
+        } catch (error) {
+            next(new ErrorResponse(error.message, 500))
+        }
 
         res.status(201).json({success: true, message:'verify email to continue'})
         
@@ -85,7 +90,7 @@ export const register = async (req, res , next)=>{
 export const verifyEmail = async (req, res, next) => {
 
 try {
-    const user = User.findOne({verificationToken: req.params.token})
+    const user = await User.findOne({verificationToken: req.params.token})
 
     if (!user){
     return next(new ErrorResponse('Invalid Token', 404))
@@ -104,7 +109,7 @@ try {
 
 //forgot password
 export const forgotPassword = async (req, res , next)=>{
-    const {email} = req.body.email
+    const email = req.body.email
 
     if (!email){
         return next(new ErrorResponse('User not found',404))
@@ -117,7 +122,7 @@ export const forgotPassword = async (req, res , next)=>{
         }
         const resetToken = crypto.randomBytes(20).toString('hex')
 
-        const resetPasswordLink = `${process.env.ENV_URL}/api/auth/resetpassword/${resetToken}`
+        const resetPasswordLink = `${process.env.ENV_URL}/auth/resetpassword/${resetToken}`
 
         await resetPasswordEmail(email, resetPasswordLink)
 

@@ -161,7 +161,7 @@ export default (req, res, next)=>{
                             message: 'sorry! this service is exclusive to residents of kaduna state'
                         })
                     }
-                    res.status(200).json({
+                    res.status(201).json({
                         success: true,
                         doc
                     })

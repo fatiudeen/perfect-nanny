@@ -10,13 +10,15 @@ export const getUser = (req, res, next)=>{
     //by req.user.id
     //by role
     //by {verified: 'Pending'}
-    let data ={}
-    (req.user.isAdmin === true && Object.keys(req.query) > 0 )
-    ? data = req.query : req.user.isAdmin === true 
-    ? data = {} : (req.user.isAdmin === false && Object.keys(req.query)[0] == '_id') 
-    ? data = req.query : req.user._id
+    let data ={};
+    (req.user.isAdmin === true && Object.keys(req.query).length > 0 )
+    ? Object.assign(data, req.query) : req.user.isAdmin === true 
+    ? false: (req.user.isAdmin === false && Object.keys(req.query)[0] == '_id') 
+    ? Object.assign(data, req.query) : (data._id =req.user._id)
 
+    //console.log(data)
     User.find(data)
+    //User.find(Object.entries(data)[0] ?? null)
     .then(doc =>{ 
         if(!doc){
             return next (new ErrorResponse('Not Found', 404))

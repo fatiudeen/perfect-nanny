@@ -20,6 +20,6 @@ router.post("/forgotpassword", forgotPassword)
 
 router.get("/verify/:token", verifyEmail)
 
-router.get("/contactUs", contactUs)
+router.post("/contactUs", contactUs)
 
 export default router

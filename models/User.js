@@ -166,12 +166,6 @@ const userSchema = new mongoose.Schema({
     
     },
 
-    avi:{
-        type: String,
-        required: false,
-    },
-
-
 
 });
 
@@ -182,17 +176,24 @@ userSchema.pre('save', async function(next){
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
     
-    if(this.role === 'Administrator'){
-        this.isAdmin = true
-    }
+    // if(this.role === 'Administrator'){
+    //     this.isAdmin = true
+    // }
     next()
         
     })
 
-// userSchema.pre('find', async function (next){
-//     this.populate('department')
-//     next()
-// })
+userSchema.pre('find', async function (next){
+    if(this.role == 'Helper'){
+
+        this.select('-verifiedToken -resetToken -personalInformation.occupation -personalInformation.kids -personalInformation.homePictures -preference -isAdmin')
+    } else if (this.role == 'User'){
+
+        this.select('-verifiedToken -resetToken -personalInformation.photos -personalInformation.typeOfHelper -personalInformation.education -personalInformation.workingHours -personalInformation.yearsOfExperience -isAdmin')
+    }
+    this.select(('firstName lastName isAdmin'))
+    next()
+})
 
 userSchema.methods.comparePasswords = async function (password){
     return await bcrypt.compare(password, this.password)

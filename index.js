@@ -4,53 +4,19 @@ import express from 'express'
 const app = express()
 import morgan from 'morgan'
 import cors from 'cors'
-import swaggerUi from 'swagger-ui-express'
-import swaggerJsdoc from 'swagger-jsdoc'
 import db from './config/db.js'
-import errorHandler from './middlewares/errorHandler.js'
+import {errorHandler} from './middlewares/error.js'
 import _protected from './middlewares/protected.js'
 import adminRoutes from './routes/adminRoute.js'
 import helperRoute from './routes/helperRoute.js'
 import authRoute from './routes/authRoute.js'
 import userRoute from './routes/userRoute.js'
 
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Perfect Nanny",
-      version: "0.1.0",
-      description:
-        "This is the documentation of Perfect Nanny API",
-      license: {
-        name: "MIT",
-        url: "https://spdx.org/licenses/MIT.html",
-      },
-    },
-    contact: {
-      name: "Shehu-Fatiudeen Lawal",
-      url: "https://www.github.com/fatiudeen",
-      email: "shehufatiudeen@gmail.com"
-    },
-    servers: [
-      {
-        url: "http://localhost:5000",
-        description: "Development Server"
-      },
-    ],
-  },
-  apis: ["./routes/*.js"],
-}
-
-const specs = swaggerJsdoc(options)
-
 //middlewares
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {explorer: true}))
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(cors())
 app.use(morgan('dev'))
-app.use(errorHandler)
 
 //Routes
 app.use('/api/auth', authRoute)
@@ -62,6 +28,7 @@ app.use('*',(req,res)=>{
       status:'Sorry Route does not exists',
   })
 })
+app.use(errorHandler)
 
 //database connection
 db()

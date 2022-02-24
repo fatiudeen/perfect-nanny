@@ -16,11 +16,11 @@ const router = express.Router()
  */
 router.post('/user', getUser)
 
-router.post('/password', changePassword)
+router.patch('/password', changePassword)
 
 router.post('/verify/:id', verify)// verify a pending user profile
 
-router.post('/notification', getNotif) // gets the list of notication
+router.get('/notification', getNotif) // gets the list of notication
 
 //chat
 

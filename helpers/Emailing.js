@@ -1,14 +1,16 @@
+import dotenv from 'dotenv'
+dotenv.config()
 import nodeMailer from 'nodemailer'
+import ErrorResponse from './ErrorResponse.js';
 
 
 class Emailing {
     constructor(emailHeader,emailAccount,mailedTo) {
-        this.emailType = emailType;
         this.emailAccount = emailAccount;
         this.mailedTo = mailedTo;
         this.emailHeader = emailHeader;
         this.emailOptions =  {
-            from: `"${this.emailAccount.sender}" <${this.emailAccount.email}@rdland.io>`,
+            from: `"${this.emailAccount.sender}" <${this.emailAccount.email}>`,
             to:   this.mailedTo.receiver,
             subject:   this.emailHeader.subject,
             text:   this.mailedTo.message.body,
@@ -18,7 +20,7 @@ class Emailing {
         }
     }
 ///EMAIL BODY FOR ALL EMAILS
-    emailBody = function (toWhomData) {
+    emailBody = function (data) {
 return  (`
 <!DOCTYPE html>
 <html lang="en">
@@ -89,12 +91,12 @@ return  (`
                 font-size: 2em;
                 cursor: pointer;}
                 .btn-primary{
-                background-color: #000;
+                background-color: #ffb6c1;
                 border: none;
                 transition: all 0.4s cubic-bezier(1, 0.2, 0.54, 0);
             }
             .btn:hover{
-                background-color: #1b1b1b;
+                background-color: #ff69b4;
             }
             .mgT2{
                 margin-top: 2rem;
@@ -110,8 +112,8 @@ return  (`
             </div>
 
                 <p class="mgT2 p">${data.message.body}</p>
-                <h3 class="h6">Please Verify Your Email  </h3>
-                <a href="${data.message.verificationLink}" class="btn btn-primary mgT2">Click here to verify</a>
+                <h3 class="h6"> </h3>
+                <a href="${data.message.verificationLink}" class="btn btn-primary mgT2">Click me!</a>
                 <p class="p mgT4">
                 </p>
 
@@ -124,23 +126,24 @@ return  (`
     
     sendEmail  = async function(){
         let  transporter =  nodeMailer.createTransport({
-            pool: true,
+            service: process.env.SMTP_SERVICE,
             host: process.env.SMTP_HOSTNAME,
             port: process.env.MAIL_PORT,
-            secure: true, // use TLS
+            secure: false, // use TLS
             auth: {
               user: process.env.MAIL_USERNAME,
               pass: process.env.MAIL_PASSWORD,
             },
-            tls: {
-                // do not fail on invalid certs
-                rejectUnauthorized: false,
-              }
+            // tls: {
+            //     // do not fail on invalid certs
+            //     rejectUnauthorized: false,
+            //   }
           })
 
         await transporter.sendMail(this.emailOptions,(error,data)=>{
             if (error){
-                return next(error)
+                console.log(error)
+                throw new ErrorResponse(error.message)
             }else{
                return data
             }
