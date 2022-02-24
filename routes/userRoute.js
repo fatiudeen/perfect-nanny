@@ -1,7 +1,7 @@
 import express from 'express'
-import verify from '../controllers/verify.js'
+import {verify} from '../controllers/verify.js'
 import find from '../controllers/find.js'
-import preference from '../controllers/preference.js'
+import {preference} from '../controllers/preference.js'
 import { avi, upload } from '../middlewares/upload.js'
 import {
     getUser,

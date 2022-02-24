@@ -15,7 +15,7 @@ import errorResponse from '../helpers/ErrorResponse.js'
  */
 
 
-export default (req, res, next)=>{
+export const verify = (req, res, next)=>{
     if (req.user.role === 'Helper'){
         if (req.user.verified == 'Verified'){
 

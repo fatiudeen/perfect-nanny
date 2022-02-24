@@ -4,7 +4,7 @@ import {
     changePassword,
     getNotif,
 } from '../controllers/user.js'
-import verify from '../controllers/verify.js'
+import {verify} from '../controllers/verify.js'
 
 const router = express.Router()
 /**

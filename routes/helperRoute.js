@@ -1,5 +1,5 @@
 import express from 'express'
-import verify from '../controllers/verify.js'
+import {verify} from '../controllers/verify.js'
 import { avi, upload } from '../middlewares/upload.js'
 import {
     getUser,
@@ -10,9 +10,9 @@ import { getAvi, getPhoto } from '../controllers/image.js'
 
 const router = express.Router()
 
-router.post('/verify',avi, upload, verify)
+router.post('/verify',avi.single('avi'), upload.array('files', 10), verify)
 
-router.post('/edit',avi, upload, verify)
+router.post('/edit',avi.single('avi'), upload.array('files', 10), verify)
 
 //gets user profile & other users if queryed with _id
 router.post('/user', getUser)

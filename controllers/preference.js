@@ -7,7 +7,7 @@ import errorResponse from '../helpers/ErrorResponse.js'
  * this module allow users set information about the type of helpers they want
  */
 
-export default (req, res, next) =>{
+export const preference = (req, res, next) =>{
 
     let data = {}
     !data.maritalStatus ? false : data.maritalStatus = req.body.maritalStatus
