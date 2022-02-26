@@ -10,16 +10,19 @@ import errorResponse from '../helpers/ErrorResponse.js'
 export const preference = (req, res, next) =>{
 
     let data = {}
-    !data.maritalStatus ? false : data.maritalStatus = req.body.maritalStatus
-    !data.typeOfHelper ? false : data.typeOfHelper = req.body.nannyType
-    !data.education ? false : data.education = req.body.education
-    !data.yearsOfExperience ? false : data.yearsOfExperience = req.body.yearsOfExperience
-    !data.workingHours.from ? false : data.workingHours = req.body.workingHoursFrom
-    !data.workingHours.to ? false : data.workingHours = req.body.workingHoursTo
-    !data.age.from ? false : data.age = req.body.ageFrom
-    !data.age.to ? false : data.age = req.body.ageTo
 
-    if(Object.entries(data) == 0){
+
+    !req.maritalStatus ? false : Object.assign(data,{'personalInformation.maritalStatus': req.body.maritalStatus})
+    !req.typeOfHelper ? false : Object.assign(data,{'personalInformation.typeOfHelper': req.body.nannyType})
+    !req.education ? false : Object.assign(data,{'personalInformation.education':  req.body.education})
+    !req.education ? false : Object.assign(data,{'personalInformation.education':  req.body.education})
+    !req.body.workingHoursFrom ? false : Object.assign(data,{'personalInformation.workingHours.from': req.body.workingHoursFrom})
+    !req.body.workingHoursTo ? false : Object.assign(data,{'personalInformation.workingHours.to': req.body.workingHoursTo});
+    !req.yearsOfExperience ? false : Object.assign(data,{'personalInformation.yearsOfExperience':  req.body.yearsOfExperience})
+    !req.ageFrom ? false : Object.assign(data,{'personalInformation.age.from': req.body.ageFrom});
+    !req.ageTo ? false : Object.assign(data,{'personalInformation.age.to': req.body.ageTo});
+
+    if(data == {}){
         return
     }
 
@@ -36,7 +39,7 @@ export const preference = (req, res, next) =>{
         })
     }
 
-    User.findByIdAndUpdate(req.user_id, {personalInformation: data})
+    User.findByIdAndUpdate(req.user._id, data, {new: true})
         .then(doc=>{
             res.status(200).json({
                 success: true,

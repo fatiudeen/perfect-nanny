@@ -50,8 +50,8 @@ const userSchema = new mongoose.Schema({
     personalInformation: {
         
         avi:{
-            type: String,
-            required: false,
+            key: {type: String},
+            url: {type: String}
         },
 
         location:{
@@ -64,7 +64,9 @@ const userSchema = new mongoose.Schema({
             state:{type: String},
         },
 
-        age:{type: Number},
+        age:{
+            type: Number
+        },
 
         occupation:{type: String},
 
@@ -74,7 +76,11 @@ const userSchema = new mongoose.Schema({
             class:[{type: String}]
         },
 
-        homePictures:[{type: String}],
+        homePictures:[{
+            key: {type: String},
+            url: {type: String}
+        }
+        ],
 
         maritalStatus:{
             type: String,
@@ -83,11 +89,13 @@ const userSchema = new mongoose.Schema({
             }
         },
 
-        photos:[{type: String}],
+        photos:[{           
+            key: {type: String},
+            url: {type: String}}],
 
         typeOfHelper:{
             type: String,
-            enum: { values: ['Baby Sitter', 'House Keeper', 'Both'],
+            enum: { values: ['Baby Sitter', 'House Keeper', 'Both', 'Others'],
             message: '{VALUE} is not valid'
             }
         },
@@ -102,8 +110,8 @@ const userSchema = new mongoose.Schema({
         yearsOfExperience:{ type: Number},
 
         workingHours:{
-            from: {type: Date},
-            to: {type: Date}
+            from: {type: Number},
+            to: {type: Number}
         },
 
         // typeOfChores:[{
@@ -175,25 +183,25 @@ userSchema.pre('save', async function(next){
 
     const salt = await bcrypt.genSalt(10)
     this.password = await bcrypt.hash(this.password, salt)
-    
-    // if(this.role === 'Administrator'){
-    //     this.isAdmin = true
-    // }
+
     next()
         
     })
 
-userSchema.pre('find', async function (next){
-    if(this.role == 'Helper'){
 
-        this.select('-verifiedToken -resetToken -personalInformation.occupation -personalInformation.kids -personalInformation.homePictures -preference -isAdmin')
-    } else if (this.role == 'User'){
+// userSchema.pre('find', async function (next){
+//     if(this.role == 'Helper'){
 
-        this.select('-verifiedToken -resetToken -personalInformation.photos -personalInformation.typeOfHelper -personalInformation.education -personalInformation.workingHours -personalInformation.yearsOfExperience -isAdmin')
-    }
-    this.select(('firstName lastName isAdmin'))
-    next()
-})
+//         this.select('-verifiedToken -resetToken -personalInformation.occupation -personalInformation.kids -personalInformation.homePictures -preference -isAdmin')
+//     } else if (this.role == 'User'){
+
+//         this.select('-verifiedToken -resetToken -personalInformation.photos -personalInformation.typeOfHelper -personalInformation.education -personalInformation.workingHours -personalInformation.yearsOfExperience -isAdmin')
+//     }else if (this.isAdmin == true){
+//         this.select(('firstName lastName isAdmin role'))
+//     }
+//     next()
+// })
+
 
 userSchema.methods.comparePasswords = async function (password){
     return await bcrypt.compare(password, this.password)

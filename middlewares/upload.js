@@ -1,19 +1,20 @@
 import dotenv from 'dotenv'
 dotenv.config()
 import multer from 'multer'
-import { S3Client } from '@aws-sdk/client-s3'
+import aws from 'aws-sdk'
 import multerS3 from 'multer-s3'
 
 const bucket = process.env.AWS_BUCKET_NAME 
 const region = process.env.AWS_BUCKET_REGION
-const accessKey = process.env.AWS_ACCESS_KEY
-const secretKey = process.env.AWS_SECRET_KEY
+const accessKeyId = process.env.AWS_ACCESS_KEY
+const secretAccessKey = process.env.AWS_SECRET_KEY
 
-const s3 = new S3Client({
-        region,
-        accessKey,
-        secretKey
-})
+aws.config.update({
+    secretAccessKey,
+    accessKeyId,
+    region
+  })
+const s3 = new aws.S3()
 
 const storage = new multerS3({
     s3,
@@ -34,27 +35,32 @@ const fileFilter =(req, res, cb)=>{
     }
 }
 
-function getUpload(key) {
-    const params = {
-        key,
-        bucket
-    }
-    return s3.getObject(params)
-    .createReadStream()
-}
+// function getUpload(key) {
+//     const params = {
+//         Key: key,
+//         Bucket: bucket
+//     }
+//     return s3.getObject(params)
+//     .createReadStream()
+// }
 
 function deleteUpload(key) {
-    const params = {
-        key,
-        bucket
-    }
+    let params
+    if(typeof key == 'object'){
+        //array of objects
+        params = {
+            Bucket: bucket,
+            delete: arrayOfObjects,
+            Quiet: true
+        }
+    } else {
+     params = {
+        key: key,
+        Bucket: bucket
+    }}
     return s3.deleteObject(params)
     .promise()
 }
-
-const avi =  multer({storage: storage},
-    {fileFilter: fileFilter}
-    )
 
 const upload = multer({
     storage: storage
@@ -62,10 +68,8 @@ const upload = multer({
 )
 
 export{
-    avi,
     upload,
-    getUpload,
-    deleteUpload
+    deleteUpload,
 }
 
 

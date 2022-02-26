@@ -14,11 +14,11 @@ const router = express.Router()
  * not queryed at all to get all users
  * 
  */
-router.post('/user', getUser)
+router.get('/user', getUser)
 
 router.patch('/password', changePassword)
 
-router.post('/verify/:id', verify)// verify a pending user profile
+router.get('/verify/:id', verify)// verify a pending user profile
 
 router.get('/notification', getNotif) // gets the list of notication
 

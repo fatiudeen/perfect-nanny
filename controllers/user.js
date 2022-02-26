@@ -12,13 +12,11 @@ export const getUser = (req, res, next)=>{
     //by {verified: 'Pending'}
     let data ={};
     (req.user.isAdmin === true && Object.keys(req.query).length > 0 )
-    ? Object.assign(data, req.query) : req.user.isAdmin === true 
+    ? data = req.query : req.user.isAdmin === true 
     ? false: (req.user.isAdmin === false && Object.keys(req.query)[0] == '_id') 
-    ? Object.assign(data, req.query) : (data._id =req.user._id)
+    ? data = req.query : (data._id =req.user._id)
 
-    //console.log(data)
     User.find(data)
-    //User.find(Object.entries(data)[0] ?? null)
     .then(doc =>{ 
         if(!doc){
             return next (new ErrorResponse('Not Found', 404))
@@ -68,15 +66,15 @@ export const changePassword = (req, res, next)=>{
 //get notification
 export const getNotif = (req, res, next)=>{
 
-    notification.find({treated: false}, (err, doc)=>{
+    notification.find({}, (err, doc)=>{
         if (err) {
             return next (new ErrorResponse(err.message))
         }
-        doc.treated = true
-        doc.save()
-        .catch(err=>{
-            return next (new ErrorResponse(err.message))
-        })
+        // doc.treated = true
+        // doc.save()
+        // .catch(err=>{
+        //     return next (new ErrorResponse(err.message))
+        // })
         res.status(201).json({success: true, doc})
     })
 } 
